@@ -10,6 +10,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,20 +22,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.learning.dto.Food;
-import com.learning.dto.Register;
+import com.learning.dto.User;
 //import com.learning.dto.Register;
 import com.learning.exception.AlreadyExistsException;
 import com.learning.exception.IdNotFoundException;
+import com.learning.exception.TypeNotFoundException;
+import com.learning.repository.FoodRepository;
+import com.learning.repository.RoleRepository;
+import com.learning.security.jwt.JwtUtils;
 import com.learning.service.FoodService;
-import com.learning.service.Impl.FoodServiceImpl;
 //import com.learning.service.UserService;
 @RestController 
-@RequestMapping("/food")
+@RequestMapping("/api/food")
 public class FoodController {
 	@Autowired
 	FoodService foodService;
+	
+	@Autowired
+	FoodRepository foodRepository;
+	
+	@Autowired
+	RoleRepository roleRepository;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	JwtUtils jwtUtils;
 
 	@PostMapping("/addFood")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<?> addFood(@Valid @RequestBody Food food) throws AlreadyExistsException {
 	
 			Food result =foodService.addFood(food);
@@ -47,6 +65,13 @@ public class FoodController {
 		Food food=foodService.getFoodById(id);
 		return ResponseEntity.ok(food);
 	}
+	
+	@GetMapping("/type/{foodType}")
+	public ResponseEntity<?> getFoodByFoodType(@PathVariable("foodType") String foodType) throws TypeNotFoundException{
+		Optional<List<Food>> food=foodService.getFoodByfoodType(foodType);
+		return ResponseEntity.ok(food);
+	}
+	
 	
 	@GetMapping("/all")
 	public ResponseEntity<?> getAllFoodDetails() {

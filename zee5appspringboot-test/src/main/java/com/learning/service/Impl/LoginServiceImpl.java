@@ -9,27 +9,26 @@ import javax.xml.crypto.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.learning.dto.Authenticate;
-import com.learning.dto.Authenticate;
+import com.learning.dto.Login;
 import com.learning.dto.Role;
-import com.learning.dto.Register;
+import com.learning.dto.User;
 import com.learning.exception.IdNotFoundException;
-import com.learning.repository.AuthenticateRepository;
-import com.learning.repository.AuthenticateRepository;
-import com.learning.service.AuthenticateService;
+
+import com.learning.repository.LoginRepository;
+import com.learning.service.LoginService;
 
 @Service
-public class AuthenticateServiceImpl implements AuthenticateService {
+public class LoginServiceImpl implements LoginService {
 
 
 	@Autowired
-	private AuthenticateRepository repository ;
+	private LoginRepository repository ;
 	
 	@Override
-	public String addCredentials(Authenticate authenticate) {
+	public String addCredentials(Login login) {
 		// TODO Auto-generated method stub
-		Authenticate authenticate2 = repository.save(authenticate);
-		if (authenticate2 != null) {
+		Login login2 = repository.save(login);
+		if (login2 != null) {
 			return "success";
 		} else {
 			return "fail";
@@ -40,7 +39,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	public String deleteCredentials(String userName) {
 		// TODO Auto-generated method stub
 		
-		Optional<Authenticate> optional;
+		Optional<Login> optional;
 		try {
 			optional = repository.findById(userName);
 			if(optional.isEmpty()) {

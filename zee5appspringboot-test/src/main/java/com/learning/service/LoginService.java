@@ -1,10 +1,10 @@
 package com.learning.service;
 
-import com.learning.dto.Authenticate;
+import com.learning.dto.Login;
 import com.learning.dto.Role;
 
-public interface AuthenticateService {
-	public String addCredentials(Authenticate authenticate);
+public interface LoginService {
+	public String addCredentials(Login authenticate);
 	public String deleteCredentials(String userName);
 	public String changePassword(String userName, String password);
 	public String changeRole(String userName, Role role);

@@ -5,12 +5,12 @@ import java.io.IOException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.learning.dto.Authenticate;
+import com.learning.dto.Login;
 
 
-public class CustomListSerializer extends StdSerializer<Authenticate> {
+public class CustomListSerializer extends StdSerializer<Login> {
 	@Override
-	public void serialize(Authenticate value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+	public void serialize(Login value, JsonGenerator gen, SerializerProvider provider) throws IOException {
 		// TODO Auto-generated method stub
 		gen.writeObject(value);
 
@@ -21,7 +21,7 @@ public class CustomListSerializer extends StdSerializer<Authenticate> {
 		this(null);
 	}
 
-	protected CustomListSerializer(Class<Authenticate> t) {
+	protected CustomListSerializer(Class<Login> t) {
 		super(t);
 	}
 

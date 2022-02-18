@@ -3,12 +3,12 @@ package com.learning.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.learning.dto.Authenticate;
+import com.learning.dto.Login;
 
 
 
 @Repository
-public interface AuthenticateRepository extends JpaRepository<Authenticate, String> {
+public interface LoginRepository extends JpaRepository<Login, String> {
 	
 	Boolean existsByUserName(String userName);
 

@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.learning.repository.UserRepository;
 import com.learning.service.UserService;
-import com.learning.dto.Authenticate;
-import com.learning.repository.AuthenticateRepository;
-import com.learning.service.AuthenticateService;
-import com.learning.dto.Register;
+import com.learning.dto.Login;
+import com.learning.repository.LoginRepository;
+import com.learning.service.LoginService;
+
+import com.learning.dto.User;
 import com.learning.exception.AlreadyExistsException;
 import com.learning.exception.IdNotFoundException;
 
@@ -21,28 +22,28 @@ public class UserServiceImpl implements UserService {
 	private UserRepository repository;
 	
 	@Autowired
-	private AuthenticateService service;
+	private LoginService service;
 	
 	@Autowired
-	private AuthenticateRepository loginRepository;
+	private LoginRepository loginRepository;
 	
 	@Override
 	@org.springframework.transaction.annotation.Transactional(rollbackFor = AlreadyExistsException.class)
-	public Register addUser(Register register) throws AlreadyExistsException {
+	public User addUser(User user) throws AlreadyExistsException {
 		// TODO Auto-generated method stub
-		boolean status = repository.existsByEmail(register.getEmail()) ;
+		boolean status = repository.existsByEmail(user.getEmail()) ;
 		if(status) {
 			throw new AlreadyExistsException("this record already exists");
 		}
-		Register register2 = repository.save(register);
+		User register2 = repository.save(user);
 		if (register2 != null) {
-			Authenticate authenticate = new Authenticate(register.getEmail(), register.getPassword(), register2);
-			if(loginRepository.existsByUserName(register.getEmail())) {
+			Login login = new Login(user.getEmail(), user.getPassword(), register2);
+			if(loginRepository.existsByUserName(user.getEmail())) {
 				throw new AlreadyExistsException("this record already exists");
 			}
-			String result = service.addCredentials(authenticate);
+			String result = service.addCredentials(login);
 			if(result == "success") {
-					//return "record added in register and login";
+					//return "record added in user and login";
 				return register2;
 			}
 			else {
@@ -56,8 +57,8 @@ public class UserServiceImpl implements UserService {
 		}	
 	
 	@Override
-	public String authenticateUser(Register register)  {
-		boolean result = repository.existsByNameAndPassword(register.getName(),register.getPassword()) ;
+	public String authenticateUser(User user)  {
+		boolean result = repository.existsByNameAndPassword(user.getName(),user.getPassword()) ;
 		if(result) {
 			return "user exists";
 		}
@@ -69,20 +70,20 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Register updateUser(int id, Register register) throws IdNotFoundException {
+	public User updateUser(int id, User user) throws IdNotFoundException {
 		
 		// TODO Auto-generated method stub
 		
 		if(!this.repository.existsById(id))
 			throw new IdNotFoundException( "id not found");
 		
-		return repository.save(register);
+		return repository.save(user);
 		}
 
 	@Override
-	public Register getUserById(int id) throws IdNotFoundException {
+	public User getUserById(int id) throws IdNotFoundException {
 		// TODO Auto-generated method stub
-		Optional<Register> optional= repository.findById(id);
+		Optional<User> optional= repository.findById(id);
 		if(optional.isEmpty()) {
 			throw new IdNotFoundException("id not found");
 		}
@@ -93,18 +94,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Register[] getAllUsers() {
+	public User[] getAllUsers() {
 		// TODO Auto-generated method stub
-		List<Register> list = repository.findAll();
-		Register[] array = new Register[list.size()];
+		List<User> list = repository.findAll();
+		User[] array = new User[list.size()];
 		return list.toArray(array);
 	}
 
 	@Override
 	public String deleteUserById(int id) throws IdNotFoundException {
 		// TODO Auto-generated method stub
-		Register optional;
-		Register register = new Register();
+		User optional;
+		User user = new User();
 		try {
 			optional = this.getUserById(id);
 			if(optional==null) {
@@ -122,8 +123,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Optional<List<Register>> getAllUserDetails() {
+	public Optional<List<User>> getAllUserDetails() {
 		// TODO Auto-generated method stub
 		return Optional.ofNullable(repository.findAll());
 	}
+
+
 }
